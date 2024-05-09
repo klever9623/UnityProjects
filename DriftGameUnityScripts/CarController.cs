@@ -10,6 +10,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private int _motorForce;
     [SerializeField] private int _brakeForce;
     [SerializeField] private float _brakeInput;
+    [SerializeField] private float _slipAllowance;
 
     private float _verticalInput;
     private float _horizontalInput;
@@ -30,6 +31,8 @@ public class CarController : MonoBehaviour
 
         Steering();
         CheckInput();
+
+        CheckParticles();
     }
 
     private void Move()
@@ -74,6 +77,23 @@ public class CarController : MonoBehaviour
                 wheel.WheelCollider.steerAngle = steeringAngle;
         }
     }
+
+    private void CheckParticles()
+    {
+        foreach (Wheel wheel in _wheels)
+        {
+            WheelHit wheelHit;
+            wheel.WheelCollider.GetGroundHit(out wheelHit);
+
+            if (Mathf.Abs(wheelHit.sidewaysSlip) + Mathf.Abs(wheelHit.forwardSlip) > _slipAllowance)
+            {
+                if (wheel.WheelSmoke.isPlaying == false)
+                    wheel.WheelSmoke.Play();
+            }
+            else
+                wheel.WheelSmoke.Stop();
+        }
+    }
 }
 
 [System.Serializable]
@@ -81,6 +101,7 @@ public struct Wheel
 {
     public Transform WheelMesh;
     public WheelCollider WheelCollider;
+    public ParticleSystem WheelSmoke;
     public bool IsForwardWheels;
 
     public void UpdateMeshPosition()
