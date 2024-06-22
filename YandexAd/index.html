@@ -1,0 +1,29 @@
+<style>
+    .adv__container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+</style>
+
+<div class="adv__container">
+    <script src="https://yandex.ru/games/sdk/v2"></script>.
+
+    <script>YaGames.init({
+            adv: {
+                onAdvClose: wasShown => {
+                    console.info('adv closed!');
+                }
+            }
+        })
+            .then(ysdk => {
+                ysdk.adv.showFullscreenAdv();
+                window.ysdk = ysdk;
+            });
+
+        function ShowAd() {
+            window.ysdk.adv.showFullscreenAdv();
+        }</script>
+</div>
